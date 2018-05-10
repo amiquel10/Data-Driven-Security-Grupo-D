@@ -11,8 +11,6 @@ PARA CADA CVE
 SACAR: ID, CPE (A qué afecta), puntuación CVSS (score) 
 
 OBJETIVOS
-Estádisticas por años : CVE's publicados, etc - Comparativa
-Vulnerabilidades más críticas (Comparativa puntuación)
-Servicios más afectados 
+Estádisticas por años : CVE's publicados, etc - Comparativa, vulnerabilidades más críticas (Comparativa puntuación), servicios más afectados...
 
-To be continued... (If possible)
+To be continued (If possible)
