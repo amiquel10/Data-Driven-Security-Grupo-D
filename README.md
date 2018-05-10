@@ -13,3 +13,6 @@ SACAR: ID, CPE (A qué afecta), puntuación CVSS (score)
 OBJETIVOS: Sacar estádisticas por años (CVE's publicados, etc -> Comparativa), vulnerabilidades más críticas (Comparativa puntuación, cuántas críticas, etc.), servicios más afectados...
 
 To be continued (If possible)
+
+https://github.com/hrbrmstr/shodan
+https://www.r-bloggers.com/shodan-api-in-r-with-examples/
