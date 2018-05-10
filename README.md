@@ -14,5 +14,3 @@ OBJETIVOS: Sacar estádisticas por años (CVE's publicados, etc -> Comparativa),
 
 To be continued (If possible)
 
-https://github.com/hrbrmstr/shodan
-https://www.r-bloggers.com/shodan-api-in-r-with-examples/
