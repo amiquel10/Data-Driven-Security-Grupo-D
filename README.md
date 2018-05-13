@@ -16,13 +16,11 @@ To be continued (If possible)
 
 
 A SACAR DATASET:
-ID (Año CVE)
-Sistemas/Servicios afectados (CPE) -> A cuántos afecta la vulnerabilidad (Puede ser otra estadística a analizar)
-Puntuación / Criticidad (SCORE CVSS)
+
+ID (Año CVE), Sistemas/Servicios afectados (CPE) -> A cuántos afecta la vulnerabilidad (Puede ser otra estadística a analizar), Puntuación / Criticidad (SCORE CVSS)
 
 ESTADÍSTICAS:
-CVE's por año
-Recuento scoring CVE's (por año?)
-Sistemas/Servicios más vulnerables
+
+CVE's por año, Recuento scoring CVE's (por año?), Sistemas/Servicios más vulnerables
 .
 .
