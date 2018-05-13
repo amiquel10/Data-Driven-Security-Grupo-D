@@ -14,3 +14,15 @@ OBJETIVOS: Sacar estádisticas por años (CVE's publicados, etc -> Comparativa),
 
 To be continued (If possible)
 
+
+A SACAR DATASET:
+ID (Año CVE)
+Sistemas/Servicios afectados (CPE) -> A cuántos afecta la vulnerabilidad (Puede ser otra estadística a analizar)
+Puntuación / Criticidad (SCORE CVSS)
+
+ESTADÍSTICAS:
+CVE's por año
+Recuento scoring CVE's (por año?)
+Sistemas/Servicios más vulnerables
+.
+.
