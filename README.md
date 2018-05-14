@@ -24,3 +24,10 @@ ESTADÍSTICAS:
 CVE's por año, Recuento scoring CVE's (por año?), Sistemas/Servicios más vulnerables
 .
 .
+
+
+A entregar dos repositorios de Git:
+
+1 - Código del informe Markdown RMD
+
+2 - Código del package
