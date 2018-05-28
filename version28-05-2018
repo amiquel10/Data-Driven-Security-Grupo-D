@@ -33,6 +33,4 @@ for (i in seq_along(a)) {
 resultat<- sumatori/id_by_year[names(id_by_year)]
 
 plot(resultat,type="o", ylim= c(0,10))
-
-
-
+abline(lm(resultat ~ id_by_year[names(id_by_year)]), col='blue')
