@@ -37,3 +37,24 @@ A entregar dos repositorios de Git:
 
 
 Nuevo dataset = https://github.com/r-net-tools/security.datasets/blob/master/net.security/sysdata.rda
+
+QUÉ TENEMOS HASTA AHORA:
+
+- DATASET PARSEADO
+
+- 2 GRÁFICAS PUNTUACIÓN/AÑO (1999-2008;2009-2018) -> TAMBIÉN INDICA LA MEDIA (VISUAL, NO NÚMERICO)
+
+- CANTIDAD CVES POR AÑO
+
+A REALIZAR:
+
+- MEDIA SCORE POR AÑO DE LOS CVE
+
+- CWE MÁS COMÚN DE CADA AÑO QUE NO SEA 'OTHER'. -> HACER PORCENTAJE DEL TOTAL DE CVES DE ESE AÑO. (HACER TABLA)
+
+- CPES/REFERENCES POR AÑO (GRÁFICAS POR CADA AÑO) -> TABLA DINÁMICA
+
+
+
+
+
