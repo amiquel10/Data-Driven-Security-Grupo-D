@@ -61,6 +61,11 @@ A REALIZAR:
 - FILTRAR UNICAMENTE POR VENDOR Y PRODUCT.
 
 
+---------------- RMARKDOWN -> INFORME ----------------
+
+
+
+
 
 
 
