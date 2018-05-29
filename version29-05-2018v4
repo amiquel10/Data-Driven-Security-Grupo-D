@@ -1,0 +1,108 @@
+#installing and loading all the packages
+install.packages("yarrr")
+install.packages("dplyr")
+install.packages("ggplot2")
+library("yarrr")
+library("dplyr")
+library("ggplot2")
+
+#download the dataset
+download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
+#we load the file that contains the dataset
+load(file = kk)
+#we obtain the cves from the dataset
+cves2 <- netsec.data$datasets$cves
+
+#se modifican las fechas debido a que el formato no es el correcto y podria dar errores
+cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
+cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
+
+#we obtain the important data from the cves id
+cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
+
+
+#View(cves2_id)
+
+#split the data in 2 subsets to make the views more visibles
+subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
+subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
+
+#we print the score of the cves from both subsets
+yarrr::pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
+           data = subset2009_2018,
+           main = "Cves puntuación por año 2009-2018")
+yarrr::pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
+           data = subset1999_2008,
+           main = "Cves puntuación por año 1999-2008")
+#named vector with the count of cves registered by year
+id_by_year<- with(cves2_id, table(y))
+#plot of the cves found by year
+barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
+text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
+
+
+
+
+#scores by year
+#####TEST kk <- finalData %>% filter(y == "2008") %>% select(cvss2.score)
+######colMeans(kk)
+
+finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
+id_by_year_w_score_wo_na<- with(finalData , table(y))
+a<- 1999:2018
+sumatori <- numeric(length = length(a))
+
+for (i in seq_along(a)) {
+  sumatori[i] <- sum(subset(finalData,finalData$y == a[i])$cvss2.score, na.rm = T) 
+}
+resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
+
+plot(resultat,type="o", ylim= c(0,10), las=2)
+abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
+
+#obtain cpes parts afected
+cpes <- netsec.data$datasets$cpes
+cpes_part<-with(cpes, table(part))
+partplot<-barplot(cpes_part, ylim=c(0,130000), las=1)
+text(partplot, cpes_part+1, labels = as.character(cpes_part),cex=1, pos = 3)
+
+
+#cpes vendors
+cpes_vendor <- with(cpes,table(vendor))
+cpes_a <- subset(cpes,(cpes$part=="a"))
+cpes_h <- subset(cpes,(cpes$part=="h"))
+cpes_o <- subset(cpes,(cpes$part=="o"))
+cpes_vendor_a <- with(cpes_a, table(vendor))
+cpes_vendor_h <- with(cpes_h, table(vendor))
+cpes_vendor_o <- with(cpes_o, table(vendor))
+
+####Cambiar tamaño titulo
+cpes_vendor_a_5 <-sort(cpes_vendor_a, decreasing = T)[1:5]
+cpes_vendor_a_5_v_others<- NaN
+names(cpes_vendor_a_5_v_others) <- c("Others")
+cpes_vendor_a_5_v_others[["Others"]] <-sum(cpes_vendor_a)-sum(cpes_vendor_a_5)
+cpes_vendor_a_5_v_others[["Top"]] <-sum(cpes_vendor_a_5)
+pie(cpes_vendor_a_5,
+    main="Top 5 de fabricantes con más aplicaciones vulnerables")
+pie(cpes_vendor_a_5_v_others,
+    main="Top 5 de fabricates con más aplicaciones vulnerables vs otros")
+
+cpes_vendor_h_5 <-sort(cpes_vendor_h, decreasing = T)[1:5]
+cpes_vendor_h_5_v_others<- NaN
+names(cpes_vendor_h_5_v_others) <- c("Others")
+cpes_vendor_h_5_v_others[["Others"]] <-sum(cpes_vendor_h)-sum(cpes_vendor_h_5)
+cpes_vendor_h_5_v_others[["Top"]] <-sum(cpes_vendor_h_5)
+pie(cpes_vendor_h_5,
+    main="Top 5 de fabricantes de hardware más vulnerable")
+pie(cpes_vendor_h_5_v_others,
+    main="Top 5 de fabricates de hardware más vulnerable vs otros")
+
+cpes_vendor_o_5 <-sort(cpes_vendor_o, decreasing = T)[1:5]
+cpes_vendor_o_5_v_others<- NaN
+names(cpes_vendor_o_5_v_others) <- c("Others")
+cpes_vendor_o_5_v_others[["Others"]] <-sum(cpes_vendor_o)-sum(cpes_vendor_o_5)
+cpes_vendor_o_5_v_others[["Top"]] <-sum(cpes_vendor_o_5)
+pie(cpes_vendor_o_5,
+    main="Top 5 de fabricantes de SO más vulnerable")
+pie(cpes_vendor_o_5_v_others,
+    main="Top 5 de fabricantes de SO más vulnerable vs otros")
