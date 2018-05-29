@@ -1,14 +1,18 @@
-#installing and loading all the packages
+#En nuestro poryecto queremos realizar un informe detallado con estadísitcas de las vulnerabilidades mas comunes filtrado por años, 
+#por criticidad, etc y dónde se muestren los servicios más afectados.
+
+#Descargaremos e instalaremos los siguientes packages
 install.packages("yarrr")
 library("yarrr")
 
-#download the dataset
+#Descargamos el DataSet de la siguiente URL y asignamos el contenido de tempfile a kk. 
 download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
-#we load the file that contains the dataset
+#Cargamos el conenido del fichero dataset
 load(file = kk)
-#we obtain the cves from the dataset
+#Obtenemos los CVES del DataSet
 cves2 <- netsec.data$datasets$cves
 
+# Se modifican las fechas por el formato no es el correcto y podría dar errores.
 cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
 cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
 
