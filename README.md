@@ -61,8 +61,7 @@ A REALIZAR:
 - FILTRAR UNICAMENTE POR VENDOR Y PRODUCT.
 
 
----------------- RMARKDOWN -> INFORME ----------------
-
+RMARKDOWN -> INFORME: Cheatsheet de ayuda https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
 
 
 
