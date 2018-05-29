@@ -16,15 +16,13 @@ cves2 <- netsec.data$datasets$cves
 cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
 cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
 
-#Obtenemos el id de los CVES 
+#Obtenemos el id de los CVES y lo asignamos a la variable *cves2_id*
 cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
 
-
-#View(cves2_id)
-
-#split the data in 2 subsets to make the views more visibles
-subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
+#Queremos mostrar una gráfica dónde se vuisualice todos los CEVS filtrados por años desde el 1999 hasta el 2018.
+#Debido que sería mostrar una gráfica con muchos años y quedaría visualmente muy pequeño, hemos decidido dividir la gráfica en dos partes dónde se muestre por un lado los CVES desde el 1999 hasta el 2008 y del 2009 hasta el 2018.
 subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
+subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
 
 #we print the score of the cves from both subsets
 yarrr::pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
