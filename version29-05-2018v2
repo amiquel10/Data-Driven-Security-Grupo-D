@@ -12,11 +12,11 @@ load(file = kk)
 #Obtenemos los CVES del DataSet
 cves2 <- netsec.data$datasets$cves
 
-# Se modifican las fechas por el formato no es el correcto y podría dar errores.
+# Mofificamos el formato de las fechas ya que nos podría dar problemas. Para ello utilizamos el siguiente código para pasar **POSIXlt** a **POSIXct**
 cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
 cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
 
-#we obtain the important data from the cves id
+#Obtenemos el id de los CVES 
 cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
 
 
