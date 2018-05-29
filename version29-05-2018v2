@@ -9,6 +9,9 @@ load(file = kk)
 #we obtain the cves from the dataset
 cves2 <- netsec.data$datasets$cves
 
+cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
+cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
+
 #we obtain the important data from the cves id
 cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
 
@@ -20,10 +23,10 @@ subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
 subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
 
 #we print the score of the cves from both subsets
-pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
+yarrr::pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
            data = subset2009_2018,
            main = "Cves puntuación por año 2009-2018")
-pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
+yarrr::pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
            data = subset1999_2008,
            main = "Cves puntuación por año 1999-2008")
 #named vector with the count of cves registered by year
@@ -34,29 +37,13 @@ text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.5
 
 
 
-length(names(id_by_year))
-names(id_by_year)[1]
-a<- 1999:2018
-sumatori <- numeric(length = length(a))
 
-for (i in seq_along(a)) {
-  sumatori[i] <- sum(subset(cves2_id,cves2_id$y == a[i])$cvss2.score, na.rm = T) 
-}
-resultat<- sumatori/id_by_year[names(id_by_year)]
-
-plot(resultat,type="o", ylim= c(0,10), las=2)
-abline(lm(resultat ~ id_by_year[names(id_by_year)]), col='blue')
-
+#scores by year
+#####TEST kk <- finalData %>% filter(y == "2008") %>% select(cvss2.score)
+######colMeans(kk)
 
 finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
-
-
-id_by_year_w_score_wo_na <- with(cves2_id,  !(is.na(cves2_id$cvss2.score)), table(y))
-
 id_by_year_w_score_wo_na<- with(finalData , table(y))
-
-length(names(id_by_year))
-names(id_by_year)[1]
 a<- 1999:2018
 sumatori <- numeric(length = length(a))
 
@@ -67,3 +54,13 @@ resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
 
 plot(resultat,type="o", ylim= c(0,10), las=2)
 abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
+
+#obtain cpes parts afected
+cpes <- netsec.data$datasets$cpes
+cpes_part<-with(cpes, table(part))
+partplot<-barplot(cpes_part, ylim=c(0,130000), las=1)
+text(partplot, cpes_part+1, labels = as.character(cpes_part),cex=1, pos = 3)
+
+
+#cpes vendors
+
