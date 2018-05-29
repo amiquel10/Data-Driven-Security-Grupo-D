@@ -1,0 +1,69 @@
+#installing and loading all the packages
+install.packages("yarrr")
+library("yarrr")
+
+#download the dataset
+download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
+#we load the file that contains the dataset
+load(file = kk)
+#we obtain the cves from the dataset
+cves2 <- netsec.data$datasets$cves
+
+#we obtain the important data from the cves id
+cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
+
+
+#View(cves2_id)
+
+#split the data in 2 subsets to make the views more visibles
+subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
+subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
+
+#we print the score of the cves from both subsets
+pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
+           data = subset2009_2018,
+           main = "Cves puntuación por año 2009-2018")
+pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
+           data = subset1999_2008,
+           main = "Cves puntuación por año 1999-2008")
+#named vector with the count of cves registered by year
+id_by_year<- with(cves2_id, table(y))
+#plot of the cves found by year
+barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
+text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
+
+
+
+length(names(id_by_year))
+names(id_by_year)[1]
+a<- 1999:2018
+sumatori <- numeric(length = length(a))
+
+for (i in seq_along(a)) {
+  sumatori[i] <- sum(subset(cves2_id,cves2_id$y == a[i])$cvss2.score, na.rm = T) 
+}
+resultat<- sumatori/id_by_year[names(id_by_year)]
+
+plot(resultat,type="o", ylim= c(0,10), las=2)
+abline(lm(resultat ~ id_by_year[names(id_by_year)]), col='blue')
+
+
+finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
+
+
+id_by_year_w_score_wo_na <- with(cves2_id,  !(is.na(cves2_id$cvss2.score)), table(y))
+
+id_by_year_w_score_wo_na<- with(finalData , table(y))
+
+length(names(id_by_year))
+names(id_by_year)[1]
+a<- 1999:2018
+sumatori <- numeric(length = length(a))
+
+for (i in seq_along(a)) {
+  sumatori[i] <- sum(subset(finalData,finalData$y == a[i])$cvss2.score, na.rm = T) 
+}
+resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
+
+plot(resultat,type="o", ylim= c(0,10), las=2)
+abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
