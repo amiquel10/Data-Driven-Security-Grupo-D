@@ -56,7 +56,7 @@ id_by_year<- with(cves2_id, table(y))
 barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
 text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
 ~~~
-#scores by year
+#Una vez obtenido la gráfica con el número de CVES por año, generamos la gráfica de criticidad por año:
 ~~~
 finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
 id_by_year_w_score_wo_na<- with(finalData , table(y))
@@ -71,14 +71,14 @@ resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
 plot(resultat,type="o", ylim= c(0,10), las=2)
 abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
 ~~~
-#obtain cpes parts afected
+#Ahora generamos la gráfica con los servicios más afectados.
+~~~
 cpes <- netsec.data$datasets$cpes
 cpes_part<-with(cpes, table(part))
 partplot<-barplot(cpes_part, ylim=c(0,130000), las=1)
 text(partplot, cpes_part+1, labels = as.character(cpes_part),cex=1, pos = 3)
-
-
-#cpes vendors
+~~~
+#Generamos la gráfica con las ampresas más afectadas. El vector lo llamaremos **cpes_vendor**. 
 cpes_vendor <- with(cpes,table(vendor))
 cpes_a <- subset(cpes,(cpes$part=="a"))
 cpes_h <- subset(cpes,(cpes$part=="h"))
