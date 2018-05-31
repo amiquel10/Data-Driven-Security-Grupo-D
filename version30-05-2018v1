@@ -1,4 +1,4 @@
-#En nuestro poryecto queremos realizar un informe detallado con estadísitcas de las vulnerabilidades mas comunes filtradas por años, por criticidad, etc y dónde se muestren los servicios más afectados.	
+#En nuestro proyecto queremos realizar un informe detallado con estadísticas de las vulnerabilidades mas comunes filtradas por años, por criticidad, etc y dónde se muestren los servicios más afectados.	
   
 #Descargaremos e instalaremos los siguientes packages:
 ~~~
@@ -13,7 +13,7 @@ library("ggplot2")
 ~~~
 download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
 ~~~
-#Cargamos el conenido del fichero dataset
+#Cargamos el contenido del fichero dataset
 ~~~
 load(file = kk)
 ~~~
@@ -21,7 +21,7 @@ load(file = kk)
 ~~~
 cves2 <- netsec.data$datasets$cves
 ~~~
-# Mofificamos el formato de las fechas ya que nos podría dar problemas. Para ello utilizamos el siguiente código para pasar **POSIXlt** a **POSIXct**
+# Modificamos el formato de las fechas ya que nos podría dar problemas. Para ello utilizamos el siguiente código para pasar **POSIXlt** a **POSIXct**
 ~~~
 cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
 cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
@@ -30,7 +30,7 @@ cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
 ~~~
 cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
 ~~~
-#Queremos mostrar una gráfica dónde se vuisualice todos los CEVS filtrados por años desde el 1999 hasta el 2018.
+#Queremos mostrar una gráfica dónde se visualice todos los CEVS filtrados por años desde el 1999 hasta el 2018.
 #Debido que sería mostrar una gráfica con muchos años y quedaría visualmente muy pequeño, hemos decidido dividir la gráfica en dos partes dónde se muestre por un lado los CVES desde el 1999 hasta el 2008 y del 2009 hasta el 2018.
 ~~~
 subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
@@ -47,12 +47,15 @@ yarrr::pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
            data = subset1999_2008,
            main = "Cves puntuación por año 1999-2008")
 ~~~
-#named vector with the count of cves registered by year
+#Creamos un vector con el numero de CVES registrados por año. Al vector lo llamamos **id_by_year**.
+~~~
 id_by_year<- with(cves2_id, table(y))
-#plot of the cves found by year
+~~~
+#Generamos la grafica con los datos obtenidos. A la gráfica la llamamos **barplot_id_by_year**.
+~~~
 barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
 text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
-
+~~~
 
 
 
