@@ -56,13 +56,8 @@ id_by_year<- with(cves2_id, table(y))
 barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
 text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
 ~~~
-
-
-
 #scores by year
-#####TEST kk <- finalData %>% filter(y == "2008") %>% select(cvss2.score)
-######colMeans(kk)
-
+~~~
 finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
 id_by_year_w_score_wo_na<- with(finalData , table(y))
 a<- 1999:2018
@@ -75,7 +70,7 @@ resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
 
 plot(resultat,type="o", ylim= c(0,10), las=2)
 abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
-
+~~~
 #obtain cpes parts afected
 cpes <- netsec.data$datasets$cpes
 cpes_part<-with(cpes, table(part))
