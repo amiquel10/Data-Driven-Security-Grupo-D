@@ -78,7 +78,7 @@ cpes_part<-with(cpes, table(part))
 partplot<-barplot(cpes_part, ylim=c(0,130000), las=1)
 text(partplot, cpes_part+1, labels = as.character(cpes_part),cex=1, pos = 3)
 ~~~
-#Generamos la gráfica con las ampresas más afectadas. El vector lo llamaremos **cpes_vendor**. 
+#Generamos la gráfica con las empresas más afectadas. El vector lo llamaremos **cpes_vendor**. 
 cpes_vendor <- with(cpes,table(vendor))
 cpes_a <- subset(cpes,(cpes$part=="a"))
 cpes_h <- subset(cpes,(cpes$part=="h"))
