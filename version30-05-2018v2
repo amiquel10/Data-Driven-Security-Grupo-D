@@ -87,7 +87,8 @@ cpes_vendor_a <- with(cpes_a, table(vendor))
 cpes_vendor_h <- with(cpes_h, table(vendor))
 cpes_vendor_o <- with(cpes_o, table(vendor))
 
-####Cambiar tamaño titulo
+#Hemos generado un gráfico con una comparativa entre el **top 5** de los fabricantes con mas vulnerabilidades contra el resto de los fabricantes.
+~~~
 top5_piecharts <- function(data, type){
   top5 <-sort(data, decreasing = T)[1:5]
   others<- NaN
@@ -101,3 +102,4 @@ top5_piecharts <- function(data, type){
   pie(others,
       main=top5vothersstring)
 }
+~~~
