@@ -4,37 +4,37 @@
 ~~~
 install.packages("yarrr")
 install.packages("dplyr")
-install.packages("ggplot2")
+install.packages("tidyr")
 library("yarrr")
 library("dplyr")
-library("ggplot2")
+library("tidyr")
 ~~~
 #Para llevar a cabo el estudio, necesitamos una fuente de datos que nos permita obtener y recolectar toda la información necesaria para llevar a cabo dicho estudio. Para ello, descargaremos y utilizaremos el dataset de la URL:
 ~~~
-  download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
+download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", fileDs <- tempfile())
 ~~~
-#Cargamos dicho dataset en nuestra variable **'kk'**
+#Cargamos dicho dataset en nuestra variable **'fileDs'**
 ~~~
-  load(file = kk)
+  load(file = fileDs)
 ~~~
 #Una vez tenemos el conjunto de datos cargado, podemos empezar a manipular nuestro fichero para nuestro propósito. 
-#Así, obtenemos el listado de CVEs del Dataset y lo almacenamos en la variable **'cves2'**.
+#Así, obtenemos el listado de CVEs del Dataset y lo almacenamos en la variable **'cves'**.
 ~~~
-  cves2 <- netsec.data$datasets$cves
+  cves <- netsec.data$datasets$cves
   ~~~
-#cves2 
-#cves2 es el registro que contiene todos los CVEs conocidos y publicados, por lo que será el objeto de estudio.
+#cves 
+#cves es el registro que contiene todos los CVEs conocidos y publicados, por lo que será el objeto de estudio.
 #Se ha tenido que realizar un análisis de la información obtenida y el formato de la misma.
 #El siguiente código corresponde a la modificación del formato de las fechas de CVE de los campos **'published.date'** y **'last.modified'** (de POSIXlt a POSIXct) de manera que evitamos futuros errores o problemas al tener dicho formato inicial.
 ~~~
-cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
-cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
+cves$published.date <- as.POSIXct.POSIXlt(cves$published.date)
+cves$last.modified <- as.POSIXct.POSIXlt(cves$last.modified)
 ~~~
-#Visualizando el contenido de **'cves2'** podemos ver la información correctamente parseada y relacionada con el CVE asociado.
+#Visualizando el contenido de **'cves'** podemos ver la información correctamente parseada y relacionada con el CVE asociado.
 #Sin embargo, en el campo **'cve.id'**, el formato seguido corresponde a CVE-AÑO-ID, siendo CVE e ID información irrelevante para nuestro estudio.
-#Por ello, separaremos dicho campo en tres, llamados **'cve'**, **'y'**, **'id'**, de manera que podamos manipular dicha información por separado, añadiendo así un nuevo dataframe **'cves2_id'**,
+#Por ello, separaremos dicho campo en tres, llamados **'cve'**, **'y'**, **'id'**, de manera que podamos manipular dicha información por separado, añadiendo así un nuevo dataframe **'cves_id'**,
 ~~~
-  cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
+  cves_id<-tidyr::separate(cves, "cve.id", c("cve","y","id"), sep="-")
 ~~~
 #Un primer objetivo propuesto es visualizar de forma gráfica la variación de las puntuaciones de los CVEs publicados a lo largo de los años (1999-Actualidad).
 #Es decir, obtener de manera representada las puntuaciones(scoring) más habituales en cada año y poder hacer una comparativa de las mismas. 
@@ -42,8 +42,8 @@ cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
 #De esta manera, logramos obtener una representación clara y visual de la información tratada, ya que en una sola gráfica no se aprecia claramente el contenido de la misma.
 #El siguiente código establece los dos nuevos registros que contienen los CVEs publicados en un rango de años determinado.
 ~~~
-subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
-subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
+subset1999_2008 <- subset(cves_id, cves_id$y <= 2008 )
+subset2009_2018 <- subset(cves_id, cves_id$y > 2008 )
 ~~~
 #Se utiliza pirateplot para generar las dos gráficas.
 ~~~
@@ -62,7 +62,7 @@ yarrr::pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
 #Otra de las gráficas propuestas es realizar el número total de CVEs publicados por año.
 #Para ello, creamos un vector con el total de CVEs publicados por año **'id_by_year'**.
 ~~~
-id_by_year<- with(cves2_id, table(y))
+id_by_year<- with(cves_id, table(y))
 ~~~
 #A continuación, representamos la cantidad total de los CVEs publicados por año.
 ~~~
@@ -80,7 +80,7 @@ text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.5
 #En este estudio, también queremos tener en cuenta la cantidad de CVEs publicados, ya que tendrá más peso en aquellos en los que se hayan publicado más CVEs.
 #Para ello, generamos un nuevo registro **'finalData'** en los que ignoramos todos aquellos CVE en los que no esté definida la puntuación. (Hecho en base al score CVSS2)
 ~~~
-finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
+finalData<-subset(cves_id,!(is.na(cves_id$cvss2.score)))
 ~~~
 #A continuación creamos un vector con el número total de CVEs publicados por año que tengan puntuación.
 ~~~
