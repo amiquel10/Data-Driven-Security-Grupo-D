@@ -1,109 +1,143 @@
--#El objetivo de este proyecto es realizar un an·lisis detallado con diferentes estadÌsticas referentes a las vulnerabilidades de seguridad publicadas,
-  #como puede ser la cantidad de CVE's emitidos por aÒo, criticidad o impacto de los mismos, fabricantes y servicios m·s vulnerables y afectados, etc.     	
+-#El objetivo de este proyecto es realizar un an√°lisis detallado con diferentes estad√≠sticas referentes a las vulnerabilidades de seguridad publicadas,
+  #como puede ser la cantidad de CVE's emitidos por a√±o, criticidad o impacto de los mismos, fabricantes y servicios m√°s vulnerables y afectados, etc.     	
    
   -#Descargaremos e instalaremos los siguientes packages para llevar a cabo el estudio
+~~~
 install.packages("yarrr")
 install.packages("dplyr")
 install.packages("ggplot2")
 library("yarrr")
 library("dplyr")
 library("ggplot2")
-
+~~~
 #Para llevar a cabo el estudio, necesitamos una fuente de datos que nos permita obtener y recolectar 
-#toda la informaciÛn necesaria para llevar a cabo dicho estudio. Para ello, descargaremos y utilizaremos el dataset de la URL:
+#toda la informaci√≥n necesaria para llevar a cabo dicho estudio. Para ello, descargaremos y utilizaremos el dataset de la URL:
+~~~
   download.file(url = "https://github.com/r-net-tools/security.datasets/raw/master/net.security/sysdata.rda", kk <- tempfile())
+~~~
 -#Cargamos dicho dataset en nuestra variable 'kk'
+~~~
   load(file = kk)
-  #Una vez tenemos el conjunto de datos cargado, podemos empezar a manipular nuestro fichero para nuestro propÛsito. 
-  #AsÌ, obtenemos el listado de CVEs del Dataset y lo almacenamos en la variable 'cves2'.
+~~~
+  #Una vez tenemos el conjunto de datos cargado, podemos empezar a manipular nuestro fichero para nuestro prop√≥sito. 
+  #As√≠, obtenemos el listado de CVEs del Dataset y lo almacenamos en la variable 'cves2'.
+~~~
   cves2 <- netsec.data$datasets$cves
-  
+  ~~~
 -#cves2 
-    #cves2 es el registro que contiene todos los CVEs conocidos y publicados, por lo que ser· el objeto de estudio.
-    #Se ha tenido que realizar un an·lisis de la informaciÛn obtenida y el formato de la misma.
-    #El siguiente cÛdigo corresponde a la modificaciÛn del formato de las fechas de CVE de los campos 'published.date' y 'last.modified' (de POSIXlt a POSIXct) de manera que evitamos futuros errores o problemas al tener dicho formato inicial.
+    #cves2 es el registro que contiene todos los CVEs conocidos y publicados, por lo que ser√° el objeto de estudio.
+    #Se ha tenido que realizar un an√°lisis de la informaci√≥n obtenida y el formato de la misma.
+    #El siguiente c√≥digo corresponde a la modificaci√≥n del formato de las fechas de CVE de los campos 'published.date' y 'last.modified' (de POSIXlt a POSIXct) de manera que evitamos futuros errores o problemas al tener dicho formato inicial.
+~~~
 cves2$published.date <- as.POSIXct.POSIXlt(cves2$published.date)
 cves2$last.modified <- as.POSIXct.POSIXlt(cves2$last.modified)
-
--
-  #Visualizando el contenido de 'cves2' podemos ver la informaciÛn correctamente parseada y relacionada con el CVE asociado.
-  #Sin embargo, en el campo 'cve.id', el formato seguido corresponde a CVE-A—O-ID, siendo CVE e ID informaciÛn irrelevante para nuestro estudio.
-  #Por ello, separaremos dicho campo en tres, llamados 'cve', 'y', 'id', de manera que podamos manipular dicha informaciÛn por separado, aÒadiendo asÌ un nuevo dataframe 'cves2_id',
+~~~
+-#Visualizando el contenido de 'cves2' podemos ver la informaci√≥n correctamente parseada y relacionada con el CVE asociado.
+  #Sin embargo, en el campo 'cve.id', el formato seguido corresponde a CVE-A√ëO-ID, siendo CVE e ID informaci√≥n irrelevante para nuestro estudio.
+  #Por ello, separaremos dicho campo en tres, llamados 'cve', 'y', 'id', de manera que podamos manipular dicha informaci√≥n por separado, a√±adiendo as√≠ un nuevo dataframe 'cves2_id',
+~~~
   cves2_id<-tidyr::separate(cves2, "cve.id", c("cve","y","id"), sep="-")
-
--#Un primer objetivo propuesto es visualizar de forma gr·fica la variaciÛn de las puntuaciones de los CVEs publicados a lo largo de los aÒos (1999-Actualidad).
-  #Es decir, obtener de manera representada las puntuaciones(scoring) m·s habituales en cada aÒo y poder hacer una comparativa de las mismas. 
-  #Se ha decidido realizar dos gr·ficas separadas en funciÛn de los aÒos, un primer rango de 1999 a 2008, y el otro de 2009 a 2018.
-  #De esta manera, logramos obtener una representaciÛn clara y visual de la informaciÛn tratada, ya que en una sola gr·fica no se aprecia claramente el contenido de la misma.
-  #El siguiente cÛdigo establece los dos nuevos registros que contienen los CVEs publicados en un rango de aÒos determinado.
+~~~
+-#Un primer objetivo propuesto es visualizar de forma gr√°fica la variaci√≥n de las puntuaciones de los CVEs publicados a lo largo de los a√±os (1999-Actualidad).
+  #Es decir, obtener de manera representada las puntuaciones(scoring) m√°s habituales en cada a√±o y poder hacer una comparativa de las mismas. 
+  #Se ha decidido realizar dos gr√°ficas separadas en funci√≥n de los a√±os, un primer rango de 1999 a 2008, y el otro de 2009 a 2018.
+  #De esta manera, logramos obtener una representaci√≥n clara y visual de la informaci√≥n tratada, ya que en una sola gr√°fica no se aprecia claramente el contenido de la misma.
+  #El siguiente c√≥digo establece los dos nuevos registros que contienen los CVEs publicados en un rango de a√±os determinado.
+~~~
 subset1999_2008 <- subset(cves2_id, cves2_id$y <= 2008 )
 subset2009_2018 <- subset(cves2_id, cves2_id$y > 2008 )
-
-#Se utiliza pirateplot para generar las dos gr·ficas.
+~~~
+#Se utiliza pirateplot para generar las dos gr√°ficas.
+~~~
 yarrr::pirateplot(formula = subset2009_2018$cvss2.score ~ subset2009_2018$y,
                   data = subset2009_2018,
-                  main = "Cves puntuaciÛn por aÒo 2009-2018")
+                  main = "Cves puntuaci√≥n por a√±o 2009-2018")
+~~~
+~~~
 yarrr::pirateplot(formula = subset1999_2008$cvss2.score ~ subset1999_2008$y,
                   data = subset1999_2008,
-                  main = "Cves puntuaciÛn por aÒo 1999-2008")
-#De las gr·ficas anteriores podemos ver cÛmo varÌa la puntuaciÛn en funciÛn de los aÒos y la dispersiÛn de la misma.
-#Podemos comprobar que, en tÈrminos de puntuaciÛn, se sigue una tendencia com˙n durante el transcurso de los aÒos, siendo mayorÌa los CVEs entre 7-8 y 4-5 de puntuaciÛn.
+                  main = "Cves puntuaci√≥n por a√±o 1999-2008")
+~~~
+#De las gr√°ficas anteriores podemos ver c√≥mo var√≠a la puntuaci√≥n en funci√≥n de los a√±os y la dispersi√≥n de la misma.
+#Podemos comprobar que, en t√©rminos de puntuaci√≥n, se sigue una tendencia com√∫n durante el transcurso de los a√±os, siendo mayor√≠a los CVEs entre 7-8 y 4-5 de puntuaci√≥n.
 
-
-#Otra de las gr·ficas propuestas es realizar el n˙mero total de CVEs publicados por aÒo.
-#Para ello, creamos un vector con el total de CVEs publicados por aÒo 'id_by_year'.
+#Otra de las gr√°ficas propuestas es realizar el n√∫mero total de CVEs publicados por a√±o.
+#Para ello, creamos un vector con el total de CVEs publicados por a√±o 'id_by_year'.
+~~~
 id_by_year<- with(cves2_id, table(y))
-#A continuaciÛn, representamos la cantidad total de los CVEs publicados por aÒo.
+~~~
+#A continuaci√≥n, representamos la cantidad total de los CVEs publicados por a√±o.
+~~~
 barplot_id_by_year<-barplot(id_by_year, ylim=c(0,15500), las=2 )
 text(barplot_id_by_year, id_by_year+1, labels = as.character(id_by_year),cex=0.58, pos = 3)
-#De la gr·fica anterior podemos ver el incremento de CVEs publicados a lo largo de los aÒos. Podemos diferenciar tres partes:
-#Una primera parte comprenderÌa el rango de los aÒos 1999-2004, los cuales son los aÒos con menor cantidad de CVEs conocidos y publicados. Esto es debido a la poca tecnologÌa y recursos de ese momento.
-#La segunda parte serÌa la m·s amplia, comprendiendo el rango entre los aÒos 2005-2015, en los que se incrementan el n˙mero de CVEs publicados respecto al anterior debido al aumento del uso de servicios y aplicaciones inform·ticas.
-#La ˙ltima parte, entre el 2016 y la actualidad, corresponden a los aÒos en los que se han conocido y publicado m·s CVE. Esto es debido a la apariciÛn de nuevas tecnologÌas emergentes y con una presencia clara en la actualidad, como puede ser Internet Of Things.
-#NOTA: Como el aÒo 2018 todavÌa no ha terminado, no podemos predecir cu·ntos CVEs se publicar·n en dicho aÒo, pero se espera que siga la misma tendencia anterior.
+~~~
+#De la gr√°fica anterior podemos ver el incremento de CVEs publicados a lo largo de los a√±os. Podemos diferenciar tres partes:
+#Una primera parte comprender√≠a el rango de los a√±os 1999-2004, los cuales son los a√±os con menor cantidad de CVEs conocidos y publicados. Esto es debido a la poca tecnolog√≠a y recursos de ese momento.
+#La segunda parte ser√≠a la m√°s amplia, comprendiendo el rango entre los a√±os 2005-2015, en los que se incrementan el n√∫mero de CVEs publicados respecto al anterior debido al aumento del uso de servicios y aplicaciones inform√°ticas.
+#La √∫ltima parte, entre el 2016 y la actualidad, corresponden a los a√±os en los que se han conocido y publicado m√°s CVE. Esto es debido a la aparici√≥n de nuevas tecnolog√≠as emergentes y con una presencia clara en la actualidad, como puede ser Internet Of Things.
+#NOTA: Como el a√±o 2018 todav√≠a no ha terminado, no podemos predecir cu√°ntos CVEs se publicar√°n en dicho a√±o, pero se espera que siga la misma tendencia anterior.
 
 
-#En nuestro an·lisis tambiÈn se querÌa determinar la media de puntuaciÛn de los CVEs publicados por aÒo, con el objetivo de conocer la criticidad media de los CVE publicados y ver la tendencia de los mismos.
-#En este estudio, tambiÈn queremos tener en cuenta la cantidad de CVEs publicados, ya que tendr· m·s peso en aquellos en los que se hayan publicado m·s CVEs.
-#Para ello, generamos un nuevo registro 'finalData' en los que ignoramos todos aquellos CVE en los que no estÈ definida la puntuaciÛn. (Hecho en base al score CVSS2)
+#En nuestro an√°lisis tambi√©n se quer√≠a determinar la media de puntuaci√≥n de los CVEs publicados por a√±o, con el objetivo de conocer la criticidad media de los CVE publicados y ver la tendencia de los mismos.
+#En este estudio, tambi√©n queremos tener en cuenta la cantidad de CVEs publicados, ya que tendr√° m√°s peso en aquellos en los que se hayan publicado m√°s CVEs.
+#Para ello, generamos un nuevo registro 'finalData' en los que ignoramos todos aquellos CVE en los que no est√© definida la puntuaci√≥n. (Hecho en base al score CVSS2)
+~~~
 finalData<-subset(cves2_id,!(is.na(cves2_id$cvss2.score)))
-#A continuaciÛn creamos un vector con el n˙mero total de CVEs publicados por aÒo que tengan puntuaciÛn.
+~~~
+#A continuaci√≥n creamos un vector con el n√∫mero total de CVEs publicados por a√±o que tengan puntuaci√≥n.
+~~~
 id_by_year_w_score_wo_na<- with(finalData , table(y))
 a<- 1999:2018
-#Creamos un vector numÈrico que contendr· la suma total de las puntuaciones de cada CVE por aÒo.
+~~~
+#Creamos un vector num√©rico que contendr√° la suma total de las puntuaciones de cada CVE por a√±o.
+~~~
 sumatori <- numeric(length = length(a))
-#El siguiente bucle permite calcular y almacenar dicha suma total de puntuaciones por aÒo.
+~~~
+#El siguiente bucle permite calcular y almacenar dicha suma total de puntuaciones por a√±o.
+~~~
 for (i in seq_along(a)) {
   sumatori[i] <- sum(subset(finalData,finalData$y == a[i])$cvss2.score, na.rm = T) 
 }
-# Por ˙ltimo, definimos la variable 'resultat' que nos permite obtener la media de la puntuaciÛn de cada aÒo de los CVEs publicados.
+~~~
+# Por √∫ltimo, definimos la variable 'resultat' que nos permite obtener la media de la puntuaci√≥n de cada a√±o de los CVEs publicados.
+~~~
 resultat<- sumatori/id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]
-
-#El siguiente cÛdigo permite la representaciÛn gr·fica de la medida de puntuaciÛn por aÒo.
+~~~
+#El siguiente c√≥digo permite la representaci√≥n gr√°fica de la medida de puntuaci√≥n por a√±o.
+~~~
 plot(resultat,type="o", ylim= c(0,10), las=2)
-#Por ˙ltimo, se pinta una recta de regresiÛn sobre la gr·fica para observar la pendiente y tendencia de la puntuaciÛn.
+~~~
+#Por √∫ltimo, se pinta una recta de regresi√≥n sobre la gr√°fica para observar la pendiente y tendencia de la puntuaci√≥n.
+~~~
 abline(lm(resultat ~ id_by_year_w_score_wo_na[names(id_by_year_w_score_wo_na)]), col='blue')
-
-#De los resultados anteriores podemos observar que la media de puntuaciÛn, independientemente de la cantidad de CVEs publicados sigue una misma tendencia y se situa entre 6 y 7.
-#Esto es debido a la gran variedad de puntuaciones recogidas en ellos y a la nula existencia de CVEs con puntuaciÛn 0-1, tal y como se podÌa ver en los primeros gr·ficos del estudio.
-
+~~~
+#De los resultados anteriores podemos observar que la media de puntuaci√≥n, independientemente de la cantidad de CVEs publicados sigue una misma tendencia y se situa entre 6 y 7.
+#Esto es debido a la gran variedad de puntuaciones recogidas en ellos y a la nula existencia de CVEs con puntuaci√≥n 0-1, tal y como se pod√≠a ver en los primeros gr√°ficos del estudio.
 
 #obtain cpes parts afected
-#Por ˙ltimo, se quiere llevar a cabo el estudio de los CPE, con el objetivo de saber a quÈ partes afectan las vulnerabilidades encontradas y quiÈn es el fabricante responsable de las mismas.
-#NOTA: Debido al alcande y limitaciÛn del estudio, este an·lisis ˙nicamente se centra en las partes (aplicaciÛn, hardware o sistema operativo) y fabricantes afectados.
+#Por √∫ltimo, se quiere llevar a cabo el estudio de los CPE, con el objetivo de saber a qu√© partes afectan las vulnerabilidades encontradas y qui√©n es el fabricante responsable de las mismas.
+#NOTA: Debido al alcande y limitaci√≥n del estudio, este an√°lisis √∫nicamente se centra en las partes (aplicaci√≥n, hardware o sistema operativo) y fabricantes afectados.
 #Para ello, obtenemos el listado de CPEs del Dataset y lo almacenamos en la variable 'cpes'.
+~~~
 cpes <- netsec.data$datasets$cpes
+~~~
 #De la misma manera que se ha hecho con anterioridad, se ha creado una nueva variable 'cpes_part' que contiene la cantidad total de las partes definidas en el CPE. 
+~~~
 cpes_part<-with(cpes, table(part))
-#El siguiente cÛdigo permite representar de forma gr·fica el n˙mero total de CPEs publicados en funciÛn de las partes afectadas.
+~~~
+#El siguiente c√≥digo permite representar de forma gr√°fica el n√∫mero total de CPEs publicados en funci√≥n de las partes afectadas.
+~~~
 partplot<-barplot(cpes_part, ylim=c(0,130000), las=1)
 text(partplot, cpes_part+1, labels = as.character(cpes_part),cex=1, pos = 3)
-#Como podemos observar en los resultados anteriores, la mayor parte de vulnerabilidades identificadas son propias de las Aplicaciones, siendo la parte de hardware la menos afectada.
-#Esto es debido a que las vulnerabilidades encontradas residen en el propio cÛdigo de dichas aplicaciones y no sean del propio hardware o sistema operativo. Adem·s existe un mayor n˙mero de aplicaciones. Por ejemplo, un mismo sistema operativo puede tener diferentes aplicaciones.
+~~~
+#Como podemos observar en los resultados anteriores, la mayor parte de vulnerabilidades identificadas son propias de las Aplicaciones, 
+siendo la parte de hardware la menos afectada.
+#Esto es debido a que las vulnerabilidades encontradas residen en el propio c√≥digo de dichas aplicaciones y no sean del propio hardware o sistema operativo. Adem√°s existe un mayor n√∫mero de aplicaciones. Por ejemplo, un mismo sistema operativo puede tener diferentes aplicaciones.
 
 
-#Por ˙ltimo, se propone el estudio de los fabricantes m·s afectados de los CPE publicados en funciÛn de la parte a la que hace referencia.
+#Por √∫ltimo, se propone el estudio de los fabricantes m√°s afectados de los CPE publicados en funci√≥n de la parte a la que hace referencia.
 #Primero, guardaremos en las correspondientes variables todos aquellos CPE relacionados con la parte
+~~~
 cpes_vendor <- with(cpes,table(vendor))
 cpes_a <- subset(cpes,(cpes$part=="a"))
 cpes_h <- subset(cpes,(cpes$part=="h"))
@@ -111,29 +145,30 @@ cpes_o <- subset(cpes,(cpes$part=="o"))
 cpes_vendor_a <- with(cpes_a, table(vendor))
 cpes_vendor_h <- with(cpes_h, table(vendor))
 cpes_vendor_o <- with(cpes_o, table(vendor))
-
-#Se define la funciÛn top5_piecharts que permitir· obtener los diferentes gr·ficos de los fabricantes m·s afectados.
-#El objetivo ser·, para cada parte afectada (aplicaciÛn, sistema y hardware) hacer una gr·fica comparativa de los 5 fabricantes con m·s vulnerabilidades y otra, del top5 con el resto, de manera que se pueda ver la totalidad y el peso de este top 5 respecto al resto.
+~~~
+#Se define la funci√≥n top5_piecharts que permitir√° obtener los diferentes gr√°ficos de los fabricantes m√°s afectados.
+#El objetivo ser√°, para cada parte afectada (aplicaci√≥n, sistema y hardware) hacer una gr√°fica comparativa de los 5 fabricantes con m√°s vulnerabilidades y otra, del top5 con el resto, de manera que se pueda ver la totalidad y el peso de este top 5 respecto al resto.
+~~~
 top5_piecharts <- function(data, type){
   top5 <-sort(data, decreasing = T)[1:5]
   others<- NaN
   names(others) <- c("Others")
   others[["Others"]] <-sum(data)-sum(top5)
   others[["Top"]] <-sum(top5)
-  top5string<- c("Top 5 de fabricantes con m·s vulnerabilidades para ", type)
-  top5vothersstring<-c("Top 5 de fabricates con m·s vulnerabilidades para ", type, " vs otros")
+  top5string<- c("Top 5 de fabricantes con m√°s vulnerabilidades para ", type)
+  top5vothersstring<-c("Top 5 de fabricates con m√°s vulnerabilidades para ", type, " vs otros")
   pie(top5,
       main=top5string)
   pie(others,
       main=top5vothersstring)
 }
-
-#Por ˙ltimo, utilizamos la funciÛn 'top5_piecharts' para representar gr·ficamente el top de fabricantes seg˙n la parte afectada.
+~~~
+#Por √∫ltimo, utilizamos la funci√≥n 'top5_piecharts' para representar gr√°ficamente el top de fabricantes seg√∫n la parte afectada.
+~~~
 top5_piecharts(cpes_vendor_a, "aplicaciones")
 top5_piecharts(cpes_vendor_h, "hardware")
 top5_piecharts(cpes_vendor_o, "sistemas operativos")
-
+~~~
 #De los resultados anteriores podemos ver la gran variedad de fabricantes afectados por vulnerabilidades de aplicaciones, ya que el top5 no representa una totalidad absoluta sobre el resto de fabricantes.
-#Sin embargo, para vulnerabilidades que afectan a Sistemas Operativos y Hardware sÌ que el top5 de fabricantes representa una mayorÌa sobre el resto,
-#esto es debido a que existe una gran variedad de fabricantes de aplicaciones por el propio mercado, sin embargo de Sistemas Operativos o de Hardware hay pocas empresas encargadas de dichos servicios y las que hay, son las m·s establecidas y confiadas en la actualidad.
-
+#Sin embargo, para vulnerabilidades que afectan a Sistemas Operativos y Hardware s√≠ que el top5 de fabricantes representa una mayor√≠a sobre el resto,
+#esto es debido a que existe una gran variedad de fabricantes de aplicaciones por el propio mercado, sin embargo de Sistemas Operativos o de Hardware hay pocas empresas encargadas de dichos servicios y las que hay, son las m√°s establecidas y confiadas en la actualidad.
