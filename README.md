@@ -4,20 +4,8 @@ Práctica Grupo D
 Alex, Jaume y Miquel
 
 
-https://vulners.com/api/v3/archive/collection/?type=cve
-
-
 PARA CADA CVE
 SACAR: ID, CPE (A qué afecta), puntuación CVSS (score) 
-
-OBJETIVOS: Sacar estádisticas por años (CVE's publicados, etc -> Comparativa), vulnerabilidades más críticas (Comparativa puntuación, cuántas críticas, etc.), servicios más afectados...
-
-To be continued (If possible)
-
-
-A SACAR DATASET:
-
-ID (Año CVE), Sistemas/Servicios afectados (CPE) -> A cuántos afecta la vulnerabilidad (Puede ser otra estadística a analizar), Puntuación / Criticidad (SCORE CVSS)
 
 ESTADÍSTICAS:
 
@@ -25,16 +13,11 @@ CVE's por año, Recuento scoring CVE's (por año?), Sistemas/Servicios más vuln
 .
 .
 
-
 A entregar dos repositorios de Git:
 
 1 - Código del informe Markdown RMD
 
 2 - Código del package
-
-
-
-
 
 Nuevo dataset = https://github.com/r-net-tools/security.datasets/blob/master/net.security/sysdata.rda
 
@@ -48,20 +31,15 @@ QUÉ TENEMOS HASTA AHORA:
 
 - MEDIA SCORE POR AÑO DE LOS CVE; CON RECTA DE REGRESIÓN TENIENDO EN CUENTA EL TOTAL DE CVES POR AÑO (PESO)
 
-A REALIZAR:
+- FILTRADO PARTE Y VENDOR (CPE) -> TOP 5 - OTROS COMPARATIVA DE FABRICANTES
+
+TRABAJO FUTURO:
 
 - CWE MÁS COMÚN DE CADA AÑO QUE NO SEA 'OTHER'. -> HACER PORCENTAJE DEL TOTAL DE CVES DE ESE AÑO. (HACER TABLA)
 
-- CPES/REFERENCES POR AÑO (GRÁFICAS POR CADA AÑO) -> TABLA DINÁMICA
-
-- DOCUMENTAR TRABAJO.
-
-- REVISAR QUE NO HAYAN COMBINACIONES ENTRE SISTEMAS OPERATIVOS, SOFTWARES, ETC.
-
-- FILTRAR UNICAMENTE POR VENDOR Y PRODUCT.
+- REVISAR QUE NO HAYAN COMBINACIONES ENTRE SISTEMAS OPERATIVOS, SOFTWARES, ETC. (CPE- MÁS ESPECÍFICO)
 
 
-RMARKDOWN -> INFORME: Cheatsheet de ayuda https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
 
 
 
